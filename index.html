@@ -6,7 +6,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Səni Sevirəm Gülüm 🌹💗</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+        const SUPABASE_URL_NEW = 'https://gcjazjogapzuuhxbbxnd.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjamF6am9nYXB6dXVoeGJieG5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MzI4MjcsImV4cCI6MjA3NjIwODgyN30.7XBqphPnFhUie3KVMMePUzJLVkWJGgJc0O9av6qCZas'
+
+        const supabase = createClient(SUPABASE_URL_NEW, SUPABASE_ANON_KEY)
+
+        const input = document.getElementById('message-input')
+        const btn = document.getElementById('send-btn')
+        const status = document.getElementById('status')
+
+        // client-side limit və sanitasiya
+        function validMessage(m) {
+            if (!m) return false
+            const trimmed = m.trim()
+            if (trimmed.length === 0) return false
+            if (trimmed.length > 1000) return false
+            return trimmed
+        }
+
+        async function getPublicIP() {
+            try {
+                const r = await fetch('https://api.ipify.org?format=json')
+                const j = await r.json()
+                return j.ip || null
+            } catch (e) {
+                console.warn('IP alınmadı:', e)
+                return null
+            }
+        }
+
+        // Baku vaxtını ISO +04:00 formatında qaytarır: YYYY-MM-DDTHH:MM:SS+04:00
+        function getBakuIsoWithOffset() {
+            // Azerbaijan is UTC+4 (no DST)
+            const offsetHours = 4
+            const now = new Date()
+
+            // compute UTC components then add offsetHours
+            const year = now.getUTCFullYear()
+            const month = now.getUTCMonth() + 1 // 0-11 -> 1-12
+            const day = now.getUTCDate()
+            const hour = now.getUTCHours()
+            const minute = now.getUTCMinutes()
+            const second = now.getUTCSeconds()
+
+            // build a Date in UTC then add offset hours to get Baku local time components
+            const utcMillis = Date.UTC(year, month - 1, day, hour, minute, second)
+            const bakuMillis = utcMillis + offsetHours * 3600 * 1000
+            const baku = new Date(bakuMillis)
+
+            const pad = (n) => String(n).padStart(2, '0')
+
+            const Y = baku.getUTCFullYear()
+            const M = pad(baku.getUTCMonth() + 1)
+            const D = pad(baku.getUTCDate())
+            const H = pad(baku.getUTCHours())
+            const Min = pad(baku.getUTCMinutes())
+            const S = pad(baku.getUTCSeconds())
+
+            // append explicit timezone offset +04:00
+            return `${Y}-${M}-${D}T${H}:${Min}:${S}+04:00`
+        }
+
+        async function sendMessage() {
+            status.textContent = ''
+            const raw = input.value
+            const message = validMessage(raw)
+            if (!message) {
+                alert('Zəhmət olmasa qısa bir mesaj yazın (1–1000 simvol).')
+                return
+            }
+
+            btn.disabled = true
+            status.style.color = 'black'
+            status.textContent = 'Göndərilir...'
+
+            // PUBLIC IP al (bu yol public IP qaytarır; daha etibarlı yol server tərəfi ilədir)
+            const ip = await getPublicIP()
+
+            // Baku vaxtını hazırla
+            const created_at = getBakuIsoWithOffset()
+
+            // Supabase .insert() parametrik olduğu üçün SQL injection riski burada yoxdur
+            const { data, error } = await supabase
+                .from('messages')
+                .insert([{ message: message, ip, created_at }])
+
+            if (error) {
+                console.error('Insert error:', error)
+                status.style.color = 'red'
+                status.textContent = 'Xəta baş verdi'
+            } else {
+                console.log('Inserted:', data)
+                status.style.color = 'green'
+                status.textContent = 'Göndərildi ✔'
+                input.value = ''
+            }
+
+            btn.disabled = false
+            setTimeout(() => status.textContent = '', 3000)
+        }
+
+        btn.addEventListener('click', sendMessage)
+
+        // optional: enter ilə də göndərmək
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage()
+        })
+    </script>
     <script>
         // --- Öz layihə məlumatlarını bura əlavə et ---
         const SUPABASE_URL = "https://gcjazjogapzuuhxbbxnd.supabase.co";
@@ -99,6 +208,18 @@
             </div>
         </div>
     </section>
+    <section id="messagefronclient">
+        <div class="message-fromclient"
+            style="display: block;max-width:520px;margin:40px auto;font-family:Arial,Helvetica,sans-serif;">
+            <h2 style="color: rgb(252, 95, 95);text-align:center">Ürək sözlərini bura yaz sevgilim 🤍</h2>
+            <input id="message-input" type="text" placeholder="Mesajınızı yazın..."
+                style="width:100%;margin-top:10px;padding:10px;font-size:16px;border-radius: 20px" />
+            <div style="margin-top:10px; display: flex; justify-content: center">
+                <button id="send-btn" style="background-color:pink;padding:10px 16px;font-size:16px;border-radius: 10px">Göndər</button>
+                <span id="status" style="margin-left:12px;color:green"></span>
+            </div>
+        </div>
+    </section>
     <section class="carousel">
         <div class="textbox" style="margin-bottom: 10px; text-align: center">
             <h1 style="color: #d6b11a">Xatirələrimiz 🤍</h1>
@@ -147,6 +268,8 @@
             <img src="img/39.jpg">
             <img src="img/40.jpg">
             <img src="img/41.jpg">
+            <img src="img/42.jpg">
+            <img src="img/43.jpg">
         </div>
 
         <!-- keçid düymələri -->
