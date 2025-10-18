@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Səni Sevirəm Gülüm 🌹💗</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+
+    <script>
+        // --- Öz layihə məlumatlarını bura əlavə et ---
+        const SUPABASE_URL = "https://gcjazjogapzuuhxbbxnd.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjamF6am9nYXB6dXVoeGJieG5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MzI4MjcsImV4cCI6MjA3NjIwODgyN30.7XBqphPnFhUie3KVMMePUzJLVkWJGgJc0O9av6qCZas";
+
+        // Supabase client
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // IP-ni əldə edən funksiya
+        async function getPublicIP() {
+            try {
+                const res = await fetch("https://api.ipify.org?format=json");
+                if (!res.ok) throw new Error("IP alınmadı");
+                const data = await res.json();
+                return data.ip;
+            } catch (err) {
+                console.error("IP xətası:", err);
+                return "unknown";
+            }
+        }
+
+        // Bakı vaxtını qaytaran funksiya (UTC+4)
+        function getBakuTime() {
+            const now = new Date();
+            const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+            const baku = new Date(utc + 4 * 60 * 60000);
+            return baku.toLocaleString("az-AZ", {
+                timeZone: "Asia/Baku",
+                hour12: false,
+            });
+        }
+
+        // Supabase-ə yazan funksiya
+        async function logVisitor() {
+            const ip = await getPublicIP();
+            const visit_time = getBakuTime();
+
+            try {
+                const { error } = await supabaseClient
+                    .from("visitors")
+                    .insert([{ ip_address: ip, visit_time }]);
+
+                if (error) console.error("Supabase insert error:", error);
+                else console.log("Ziyarətçi qeyd olundu:", ip, visit_time);
+            } catch (err) {
+                console.error("Xəta:", err);
+            }
+        }
+
+        // Sayt yüklənəndə yaz
+        window.addEventListener("DOMContentLoaded", logVisitor);
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <audio id="bgMusic" src="audio/music.mp3" autoplay loop preload="metadata"></audio>
+
+    <nav class="navbar">
+        <h1>AYGÜL</h1>
+        <div class="nav-center">
+            <div class="logo-placeholder">
+                <img src="img/logo.png" alt="">
+            </div>
+        </div>
+        <h1>ƏLİ</h1>
+    </nav>
+
+    <section class="home">
+        <h1>Səni Sevirəm 🤍</h1>
+        <p>Hər gün, hər saniyə səni düşünürəm...</p>
+    </section>
+
+    <section class="message">
+        <div class="msg-box">
+            <div id="poemLines">
+                <p>
+                    Sən mənim ən gözəl təsadüfümsən<br>
+                    Gözlərinə baxanda dünyanın səsi kəsilir...<br>
+                    Ürəyim yalnız sənin üçün döyünür<br>
+                    Uzaq olsan belə, düşüncələrimdə həmişə yanımdasan
+                </p>
+            </div>
+            <span class="signature">— Əli 🤍</span>
+            <div class="controls">
+                <button id="prevButn">❮</button>
+                <button id="nextButn">❯</button>
+            </div>
+        </div>
+    </section>
+    <section class="carousel">
+        <div class="textbox" style="margin-bottom: 10px; text-align: center">
+            <h1 style="color: #d6b11a">Xatirələrimiz 🤍</h1>
+            <h2 style="font-size: 22px">Son Yenilənmə: 18-10-2025 11:00</h2>
+        </div>
+        <div class="slides">
+            <img src="img/1.jpg">
+            <img src="img/2.jpg">
+            <img src="img/3.jpg">
+            <img src="img/4.jpg">
+            <img src="img/5.jpg">
+            <img src="img/6.jpg">
+            <img src="img/7.jpg">
+            <img src="img/8.jpg">
+            <img src="img/9.jpg">
+            <img src="img/10.jpg">
+            <img src="img/11.jpg">
+            <img src="img/12.jpg">
+            <img src="img/13.jpg">
+            <img src="img/14.jpg">
+            <img src="img/15.jpg">
+            <img src="img/16.jpg">
+            <img src="img/17.jpg">
+            <img src="img/18.jpg">
+            <img src="img/19.jpg">
+            <img src="img/20.jpg">
+            <img src="img/21.jpg">
+            <img src="img/22.jpg">
+            <img src="img/23.jpg">
+            <img src="img/24.jpg">
+            <img src="img/25.jpg">
+            <img src="img/26.jpg">
+            <img src="img/27.jpg">
+            <img src="img/28.jpg">
+            <img src="img/29.jpg">
+            <img src="img/30.jpg">
+            <img src="img/31.jpg">
+            <img src="img/32.jpg">
+            <img src="img/33.jpg">
+            <img src="img/34.jpg">
+            <img src="img/35.jpg">
+            <img src="img/36.jpg">
+            <img src="img/36.jpg">
+            <img src="img/37.jpg">
+            <img src="img/38.jpg">
+            <img src="img/39.jpg">
+            <img src="img/40.jpg">
+            <img src="img/41.jpg">
+        </div>
+
+        <!-- keçid düymələri -->
+        <button class="prev">❮</button>
+        <button class="next">❯</button>
+    </section>
+</body>
+
+</html>
