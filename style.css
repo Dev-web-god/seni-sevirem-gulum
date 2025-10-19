@@ -279,3 +279,10 @@ body {
     background: #ffd6e7;
     transform: scale(1.1);
 }
+
+.slides video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    flex-shrink: 0;
+}

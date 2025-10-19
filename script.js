@@ -67,19 +67,28 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-// 💞 Şəkil karuseli (avtomatik və əl ilə keçid)
+// 💞 Şəkil və video karuseli (avtomatik və əl ilə keçid)
 const slides = document.querySelector(".slides");
-const images = document.querySelectorAll(".slides img");
+const mediaItems = document.querySelectorAll(".slides img, .slides video");
 const prevBtn = document.querySelector(".prev");
 const nextBtn = document.querySelector(".next");
 
 let index = 0;
 
-// Şəkil dəyişmə funksiyası
+// Slaydı göstərən funksiya
 function showSlide(i) {
-  if (i < 0) index = images.length - 1;
-  else if (i >= images.length) index = 0;
+  // əvvəlki videoları dayandır
+  mediaItems.forEach(el => {
+    if (el.tagName === "VIDEO") {
+      el.pause();
+      el.currentTime = 0;
+    }
+  });
+
+  if (i < 0) index = mediaItems.length - 1;
+  else if (i >= mediaItems.length) index = 0;
   else index = i;
+
   slides.style.transform = `translateX(-${index * 100}%)`;
 }
 
@@ -89,8 +98,22 @@ nextBtn.addEventListener("click", () => showSlide(index + 1));
 
 // Avtomatik dəyişmə (5 saniyədə bir)
 setInterval(() => {
+  const current = mediaItems[index];
+  // Əgər video oynayırsa, keçməsin
+  if (current.tagName === "VIDEO" && !current.paused) return;
   showSlide(index + 1);
 }, 5000);
+
+// Videoya kliklə play/pause nəzarəti
+mediaItems.forEach(el => {
+  if (el.tagName === "VIDEO") {
+    el.addEventListener("click", () => {
+      if (el.paused) el.play();
+      else el.pause();
+    });
+  }
+});
+
 
 
 const music = document.getElementById("bgMusic");
